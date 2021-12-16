@@ -53,11 +53,11 @@ function love.load()
   saveData.currentLevel = "level1"
 
   -- Recover save from filesystem
-  -- if love.filesystem.getInfo("data.lua") then
-  --   local data = love.filesystem.load("data.lua")
+  if love.filesystem.getInfo("data.lua") then
+    local data = love.filesystem.load("data.lua")
 
-  --   data()
-  -- end
+    data()
+  end
 
   sounds = {}
   sounds.jump = love.audio.newSource("sounds/jump.wav", "static")
