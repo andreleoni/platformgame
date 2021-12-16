@@ -11,6 +11,7 @@ function love.load()
   sprites = {}
   sprites.playerSheet = love.graphics.newImage('sprites/playerSheet.png')
   sprites.enemySheet = love.graphics.newImage('sprites/enemySheet.png')
+  sprites.background = love.graphics.newImage('sprites/background.png')
 
   local grid = anim8.newGrid(
     614,
@@ -36,6 +37,7 @@ function love.load()
 
   require('player')
   require('enemy')
+  require('libraries/show')
 
   dangerZone = world:newRectangleCollider(0, 550, 800, 50, { collision_class = 'Danger' })
   dangerZone:setType('static')
@@ -47,6 +49,20 @@ function love.load()
 
   saveData = {}
   saveData.currentLevel = "level1"
+
+  if love.filesystem.getInfo("data.lua") then
+    local data = love.filesystem.load("data.lua")
+
+    data()
+  end
+
+  sounds = {}
+  sounds.jump = love.audio.newSource("sounds/jump.wav", "static")
+  sounds.music = love.audio.newSource("sounds/music.mp3", "stream")
+  sounds.music:setLooping(true)
+  sounds.music:setVolume(0.4)
+
+  sounds.music:play()
 
   loadMap(saveData.currentLevel)
 end
@@ -73,8 +89,9 @@ function love.update(dt)
 end
 
 function love.draw()
-  cam:attach()
+  love.graphics.draw(sprites.background, 0, 0)
 
+  cam:attach()
     gameMap:drawLayer(gameMap.layers["Camada de Tiles 1"])
 
     drawPlayer()
@@ -89,12 +106,14 @@ function love.keypressed(key)
   if key == 'up' then
     if player.grounded then
       player:applyLinearImpulse(0, -4000)
+      sounds.jump:play()
     end
   end
 end
 
 function loadMap(mapName)
   saveData.currentLevel = mapName
+  love.filesystem.write("data.lua", table.show(saveData, "saveData"))
 
   destroyAll()
   player:setPosition(300, 300)
