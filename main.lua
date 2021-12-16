@@ -1,12 +1,14 @@
 function love.load()
   wf = require 'libraries/windfield/windfield'
   world = wf.newWorld(0, 800, false)
+  world:setQueryDebugDrawing(true)
 
   world:addCollisionClass('Player')
   world:addCollisionClass('Platform')
   world:addCollisionClass('Danger')
 
   player = world:newRectangleCollider(360, 100, 80, 80, { collision_class = 'Player' })
+  player:setFixedRotation(true)
   player.speed = 240
 
   platform = world:newRectangleCollider(250, 400, 300, 100, { collision_class = 'Platform' })
@@ -19,14 +21,20 @@ end
 function love.update(dt)
   world:update(dt)
 
-  local px, py = player:getPosition()
+  if player.body then
+    local px, py = player:getPosition()
 
-  if love.keyboard.isDown('right') then
-    player:setX(px + player.speed * dt)
+    if love.keyboard.isDown('right') then
+      player:setX(px + player.speed * dt)
+    end
+
+    if love.keyboard.isDown('left') then
+      player:setX(px - player.speed * dt)
+    end
   end
 
-  if love.keyboard.isDown('left') then
-    player:setX(px - player.speed * dt)
+  if player:enter('Danger') then
+    player:destroy()
   end
 end
 
@@ -37,5 +45,15 @@ end
 function love.keypressed(key)
   if key == 'up' then
     player:applyLinearImpulse(0, -5000)
+  end
+end
+
+function love.mousepressed(x, y, button)
+  if button == 1 then
+    local colliders = world:queryCircleArea(x, y, 200, {'Platform', 'Danger'})
+
+    for i,c in ipairs(colliders) do
+      c:destroy()
+    end
   end
 end
