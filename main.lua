@@ -1,5 +1,7 @@
 function love.load()
-  love.window.setMode(1000,768)
+  love.window.setTitle("Nelinha's World")
+
+  love.window.setMode(1000, 768)
   wf = require 'libraries/windfield/windfield'
   anim8 = require 'libraries/anim8/anim8'
 
@@ -50,6 +52,7 @@ function love.load()
   saveData = {}
   saveData.currentLevel = "level1"
 
+  -- Recover save from filesystem
   if love.filesystem.getInfo("data.lua") then
     local data = love.filesystem.load("data.lua")
 
@@ -65,6 +68,8 @@ function love.load()
   sounds.music:play()
 
   loadMap(saveData.currentLevel)
+
+  gameOver = false
 end
 
 function love.update(dt)
@@ -84,6 +89,8 @@ function love.update(dt)
       loadMap("level2")
     elseif saveData.currentLevel == "level2" then
       loadMap("level3")
+    elseif saveData.currentLevel == "level3" then
+      gameOver = true
     end
   end
 end
@@ -97,9 +104,13 @@ function love.draw()
     drawPlayer()
     drawEnemies()
 
-    world:draw()
-
+    -- world:draw()
   cam:detach()
+
+  if gameOver then
+    love.graphics.setFont(love.graphics.newFont(30))
+    love.graphics.printf("Game Over!", 0, 50, love.graphics.getWidth(), "center")
+  end
 end
 
 function love.keypressed(key)
