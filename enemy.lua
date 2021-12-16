@@ -1,13 +1,13 @@
 enemies = {}
 
 function spawnEnemy(x, y)
-  -- local enemy = world:newRectangleCollider(x, y, 70, 90, { collision_class = "Danger" })
+  local enemy = world:newRectangleCollider(x, y, 70, 90, { collision_class = "Danger" })
 
-  -- enemy.direction = 1
-  -- enemy.speed = 200
-  -- enemy.animation = animations.enemy
+  enemy.direction = 1
+  enemy.speed = 200
+  enemy.animation = animations.enemy
 
-  -- table.insert(enemies, enemy)
+  table.insert(enemies, enemy)
 end
 
 function updateEnemies(dt)

@@ -45,9 +45,10 @@ function love.load()
   flagX = 0
   flagY = 0
 
-  currentLevel = "level1"
+  saveData = {}
+  saveData.currentLevel = "level1"
 
-  loadMap(currentLevel)
+  loadMap(saveData.currentLevel)
 end
 
 function love.update(dt)
@@ -63,9 +64,9 @@ function love.update(dt)
 
   local colliders = world:queryCircleArea(flagX, flagY, 10, {'Player'})
   if #colliders > 0 then
-    if currentLevel == "level1" then
+    if saveData.currentLevel == "level1" then
       loadMap("level2")
-    elseif currentLevel == "level2" then
+    elseif saveData.currentLevel == "level2" then
       loadMap("level3")
     end
   end
@@ -93,7 +94,7 @@ function love.keypressed(key)
 end
 
 function loadMap(mapName)
-  currentLevel = mapName
+  saveData.currentLevel = mapName
 
   destroyAll()
   player:setPosition(300, 300)
