@@ -39,7 +39,7 @@ function love.load()
   require('enemy')
   require('libraries/show')
 
-  dangerZone = world:newRectangleCollider(0, 550, 800, 50, { collision_class = 'Danger' })
+  dangerZone = world:newRectangleCollider(-500, 800, 5000, 50, { collision_class = 'Danger' })
   dangerZone:setType('static')
 
   platforms = {}
@@ -116,7 +116,7 @@ function loadMap(mapName)
   love.filesystem.write("data.lua", table.show(saveData, "saveData"))
 
   destroyAll()
-  player:setPosition(300, 300)
+  player:setPosition(playerStartX, playerStartY)
 
   gameMap = sti("maps/".. mapName ..".lua")
   for i, obj in pairs(gameMap.layers["Platforms"].objects) do
@@ -125,6 +125,11 @@ function loadMap(mapName)
 
   for i, obj in pairs(gameMap.layers["Enemies"].objects) do
     spawnEnemy(obj.x, obj.y)
+  end
+
+  for i, obj in pairs(gameMap.layers["Start"].objects) do
+    playerStartX = obj.x
+    playerStartY = obj.y
   end
 
   if gameMap.layers["NextLevel"] ~= nil then
